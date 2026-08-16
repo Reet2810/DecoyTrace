@@ -1,7 +1,33 @@
-from flask import Flask, url_for
+from multiprocessing import connection
+
+from flask import Flask, url_for, request
+from datetime import datetime
+import sqlite3
 import secrets
 
 generated_token = []
+events = []
+
+def get_db_connection():
+    connection = sqlite3.connect("decoytrace.db")
+    return connection
+
+def init_db():
+    connection = get_db_connection()
+
+    connection.execute("""
+    CREATE TABLE IF NOT EXISTS events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT,
+        ip_address TEXT,
+        user_agent TEXT,
+        timestamp DATETIME
+    )
+    """)
+    connection.commit()
+    connection.close()
+
+init_db()
 
 app = Flask(__name__)
 
@@ -20,7 +46,18 @@ def generate_decoy():
 @app.route("/decoy/<token>")
 def decoy(token):
     if token in generated_token:
-        return f"ALERT! decoy token accessed: {token}"
+        ip_address = request.remote_addr
+        user_agent = request.headers.get("User-Agent")
+        timestamp = datetime.now()
+        event = {
+            "token": token,
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+            "timestamp": timestamp
+        }
+        events.append(event)
+        return str(events)
+    
     return "Not a valid decoy token."
 
 if __name__ == "__main__":
