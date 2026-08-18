@@ -1,5 +1,3 @@
-from multiprocessing import connection
-
 from flask import Flask, url_for, request
 from datetime import datetime
 import sqlite3
@@ -29,6 +27,16 @@ def init_db():
 
 init_db()
 
+def generate_alert(event):
+    alert_message = (
+        f"ALERT: Honeytoken accessed! "
+        f"Token={event['token']} | "
+        f"IP={event['ip_address']} | "
+        f"Time={event['timestamp']}"
+    )
+    print(alert_message)
+    return alert_message
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -56,7 +64,25 @@ def decoy(token):
             "timestamp": timestamp
         }
         events.append(event)
-        return str(events)
+        connection = get_db_connection()
+        connection.execute(
+            """
+            INSERT INTO events (token, ip_address, user_agent, timestamp)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                token,
+                ip_address,
+                user_agent,
+                timestamp.isoformat()
+            )
+        )
+        connection.commit()
+        connection.close()
+
+        alert = generate_alert(event)
+        
+        return alert
     
     return "Not a valid decoy token."
 
