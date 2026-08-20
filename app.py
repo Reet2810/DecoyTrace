@@ -22,6 +22,16 @@ def init_db():
         timestamp DATETIME
     )
     """)
+
+    connection.execute("""
+    CREATE TABLE IF NOT EXISTS tokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT UNIQUE,
+        created_at DATETIME,
+        status TEXT
+    )
+    """)
+
     connection.commit()
     connection.close()
 
@@ -47,13 +57,36 @@ def home():
 def generate_decoy():
     token =  secrets.token_hex(8)
     generated_token.append(token)
+    created_time = datetime.now()
+
+    connection = get_db_connection()
+    connection.execute(
+        """
+        INSERT INTO tokens (token, created_at, status)
+        VALUES (?, ?, ?)
+        """,
+        (
+            token,
+            created_time.isoformat(),
+            "active"
+        )
+    )
+    connection.commit()
+    connection.close()
 
     decoy_url = url_for('decoy', token=token)
     return f"Generated decoy url: {decoy_url}<br>Generated tokens: {generated_token}"
 
 @app.route("/decoy/<token>")
 def decoy(token):
-    if token in generated_token:
+    connection = get_db_connection()
+    token_record = connection.execute(
+        "SELECT * FROM tokens WHERE token = ?",
+        (token,)
+    ).fetchone()
+    connection.close()
+
+    if token_record:
         ip_address = request.remote_addr
         user_agent = request.headers.get("User-Agent")
         timestamp = datetime.now()
@@ -76,6 +109,18 @@ def decoy(token):
                 user_agent,
                 timestamp.isoformat()
             )
+        )
+        connection.commit()
+        connection.close()
+
+        connection = get_db_connection()
+        connection.execute(
+            """
+            UPDATE tokens
+            SET status = ?
+            WHERE token = ?
+            """,
+            ("triggered", token)
         )
         connection.commit()
         connection.close()

@@ -3,7 +3,7 @@ import sqlite3
 connection = sqlite3.connect("decoytrace.db")
 
 rows = connection.execute(
-    "SELECT * FROM events"
+    "SELECT * FROM tokens"
 ).fetchall()
 
 print(rows)
