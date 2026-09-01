@@ -1,0 +1,6 @@
+Application Server Information
+
+Environment: Internal Testing
+Application: DecoyTrace
+Application Port: 5000
+Environment Owner: Security Testing Team

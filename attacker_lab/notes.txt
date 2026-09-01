@@ -1,0 +1,5 @@
+Team Notes
+
+Project deployment scheduled for Friday.
+Remember to update documentation.
+Review testing checklist before deployment.
