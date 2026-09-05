@@ -1,4 +1,5 @@
 import os
+import requests
 
 TARGET_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,5 +32,15 @@ for file in files:
         if found_keywords:
             print(f"[!] Interesting resource found: {file}")
             print(f"    Keywords detected: {found_keywords}")
+            if "token" in content.lower():
+                for line in content.splitlines():
+                    if "token" in line.lower():
+                        token = line.split(":", 1)[-1].strip()
+                        print(f"    Honeytoken extracted: {token}")
+                        target_url = f"http://127.0.0.1:5000/decoy/{token}"
+                        response = requests.get(target_url)
+
+                        print(f"[+] HTTP request sent to {target_url}")
+                        print(f"[+] Response: {response.status_code}")
         else:
             print(f"[-] {file} does not appear interesting")
