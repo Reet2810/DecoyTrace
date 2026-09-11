@@ -13,7 +13,7 @@ for token in tokens:
 
 # View attacker interaction events
 events = connection.execute(
-    "SELECT * FROM events"
+    "SELECT * FROM events ORDER BY timestamp ASC"
 ).fetchall()
 
 print("\nEVENTS TABLE:")
