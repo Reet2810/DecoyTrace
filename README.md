@@ -6,34 +6,111 @@
 
 The overall DecoyTrace workflow is:
 
-**Generate Honeytokens → Deploy → Detect Interaction → Generate Alert → Analyze Risk/Related Activity → SOC/Incident Response Containment**
+**Generate Honeytokens → Deploy → Detect Interaction → Generate Alert → Correlate Related Activity → Analyze Risk → SOC/Incident Response Containment**
 
 The project is being developed incrementally, with each phase focusing on a specific part of this workflow.
 
-## Current Phase — Phase 1: Proof of Concept
+## Current Phase — Phase 5: Risk Scoring
 
-The goal of Phase 1 is to build a basic working proof of concept that can:
+DecoyTrace is currently in **Phase 5 — Risk Scoring**.
 
-1. Generate a unique decoy URL.
-2. Detect when the decoy URL is accessed.
-3. Record the interaction.
-4. Generate a security alert.
+The goal of this phase is to evaluate correlated security activity and assign a risk level based on characteristics of the observed activity.
 
-This phase establishes the core detection pipeline before additional analysis and response capabilities are developed.
+Phase 5 is currently **in development**. Implementation details will be documented after they are developed and tested.
 
 ## Project Status
 
-**Phase 1 — Proof of Concept: In Development**
+| Phase    | Description                      | Status            |
+| -------- | -------------------------------- | ----------------- |
+| Phase 1  | Proof of Concept                 | ✅ Complete        |
+| Phase 2  | Persistent Honeytoken Management | ✅ Complete        |
+| Phase 3A | Attacker Simulation              | ✅ Complete        |
+| Phase 3B | Kali/Docker Attacker Environment | ⏸️ Deferred       |
+| Phase 4  | Event Correlation                | ✅ Complete        |
+| Phase 5  | Risk Scoring                     | 🚧 In Development |
+| Phase 6  | Response & Containment           | 🔜 Planned        |
+| Phase 7  | Cloud Security Integration       | 🔜 Planned        |
 
-Current repository setup:
+### Phase 1 — Proof of Concept
 
-* Git/GitHub repository initialized
-* Python virtual environment configured locally
-* `.gitignore` configured to exclude local environment files and secrets
+Implemented and tested:
 
-## Planned Development
+* Unique decoy URL generation
+* Decoy interaction detection
+* IP address, User-Agent, and timestamp collection
+* SQLite-based event storage
+* Invalid token rejection
+* Security alert generation
 
-DecoyTrace will be developed incrementally across multiple phases. Features will be documented here as they are actually implemented and tested.
+### Phase 2 — Persistent Honeytoken Management
+
+Implemented and tested:
+
+* Persistent honeytoken storage
+* Unique token identification
+* Token creation timestamps
+* Token status tracking
+* Triggered token state
+
+### Phase 3A — Attacker Simulation
+
+Implemented and tested:
+
+* Reconnaissance simulation
+* Resource discovery
+* File inspection
+* Credential-related keyword detection
+* Honeytoken extraction
+* Simulated interaction with the DecoyTrace endpoint
+* Event persistence and alert generation
+
+### Phase 3B — Kali/Docker Attacker Environment
+
+A dedicated Kali/Docker attacker environment was considered for attacker simulation but is currently **deferred**.
+
+### Phase 4 — Event Correlation
+
+Implemented and tested:
+
+* Chronological security event retrieval
+* Time-based event correlation
+* A **3-minute correlation window**
+* Grouping of related events into attacker activity
+* Identification of isolated or unrelated events
+
+Phase 4 extends DecoyTrace beyond individual event detection by identifying security events that may belong to the same attacker activity sequence.
+
+### Phase 5 — Risk Scoring
+
+**Status: In Development**
+
+The objective of Phase 5 is to evaluate correlated attacker activity and assign a risk level based on relevant characteristics of the observed activity.
+
+Implementation details will be added as the risk-scoring functionality is developed and verified.
+
+## Architecture
+
+The current DecoyTrace detection pipeline is:
+
+```text
+Honeytoken Generation
+        ↓
+Honeytoken Deployment
+        ↓
+Interaction Detection
+        ↓
+Event Logging
+        ↓
+Alert Generation
+        ↓
+Event Correlation
+        ↓
+Risk Scoring
+        ↓
+Response / Containment
+```
+
+The architecture will evolve as additional detection, analysis, response, and cloud capabilities are implemented.
 
 ## Repository Structure
 
@@ -41,10 +118,30 @@ DecoyTrace will be developed incrementally across multiple phases. Features will
 DecoyTrace/
 ├── .gitignore
 ├── README.md
+├── app.py
+├── correlation.py
+├── view_db.py
+├── attacker_lab/
+│   └── ...
 └── ...
 ```
 
 The repository structure will evolve as development progresses.
+
+## Planned Development
+
+Future phases will expand DecoyTrace toward a more complete security monitoring and response platform.
+
+Planned areas include:
+
+* Risk-based prioritization of detected activity
+* Security response and containment mechanisms
+* Additional attacker simulation environments
+* Cloud security integration
+* Cloud telemetry integration
+* Further SOC-oriented investigation and response capabilities
+
+Features will be documented here only after they are implemented and tested.
 
 ## Disclaimer
 
