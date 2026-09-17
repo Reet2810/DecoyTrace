@@ -41,7 +41,17 @@ connection.close()
 activities = create_activity_groups(events)
 
 for i, activity in enumerate(activities, start=1):
+
+    start_time = datetime.fromisoformat(activity[0][4])
+    end_time = datetime.fromisoformat(activity[-1][4])
+    duration = end_time - start_time
+
     print(f"\nActivity {i}:")
+    print(f"    Events: {len(activity)}")
+    print(f"    Source IP: {activity[0][2]}")
+    print(f"    Start Time: {activity[0][4]}")
+    print(f"    End Time: {activity[-1][4]}")
+    print(f"    Duration: {duration}")
 
     for event in activity:
         print(f"    Event {event[0]}")
