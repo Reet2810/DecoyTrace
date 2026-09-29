@@ -16,7 +16,16 @@ DecoyTrace is currently in **Phase 5 — Risk Scoring**.
 
 The goal of this phase is to evaluate correlated security activity and assign a risk level based on characteristics of the observed activity.
 
-Phase 5 is currently **in development**. Implementation details will be documented after they are developed and tested.
+Phase 5 is currently **in development**. The initial risk-scoring design uses four activity characteristics:
+
+* Number of Events
+* Number of Unique Honeytokens
+* Token Type
+* Token Sensitivity
+
+The planned scoring approach is **weighted and deterministic**, with individual feature contributions combined to produce an explainable risk score.
+
+The exact feature weights, score range, and risk-level thresholds are still being designed and will be documented after they are finalized, implemented, and tested.
 
 ## Project Status
 
@@ -77,6 +86,7 @@ Implemented and tested:
 * A **3-minute correlation window**
 * Grouping of related events into attacker activity
 * Identification of isolated or unrelated events
+* Activity context including event count, source IP, start time, end time, duration, and event IDs
 
 Phase 4 extends DecoyTrace beyond individual event detection by identifying security events that may belong to the same attacker activity sequence.
 
@@ -85,6 +95,17 @@ Phase 4 extends DecoyTrace beyond individual event detection by identifying secu
 **Status: In Development**
 
 The objective of Phase 5 is to evaluate correlated attacker activity and assign a risk level based on relevant characteristics of the observed activity.
+
+The initial scoring features are:
+
+1. **Number of Events** — represents the intensity of activity.
+2. **Number of Unique Honeytokens** — represents the breadth of interaction across decoy resources.
+3. **Token Type** — represents what the honeytoken represents, such as a generic, credential, or configuration resource.
+4. **Token Sensitivity** — represents the relative importance of the accessed honeytoken, such as low, medium, or high sensitivity.
+
+The planned scoring model is **weighted and deterministic**. Individual feature contributions will be combined to produce a transparent risk score that can be explained in terms of the observed activity.
+
+The exact weights, score range, and risk-level thresholds are still being designed.
 
 Implementation details will be added as the risk-scoring functionality is developed and verified.
 
