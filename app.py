@@ -55,20 +55,34 @@ def home():
 
 @app.route("/decoy")
 def generate_decoy():
-    token =  secrets.token_hex(8)
+    token_type = request.args.get("type", "generic").lower()
+    sensitivity = request.args.get("sensitivity", "low").lower()
+
+    valid_types = ["generic", "configuration", "credential"]
+    valid_sensitivities = ["low", "medium", "high"]
+
+    if token_type not in valid_types:
+        return "Invalid token type", 400
+
+    if sensitivity not in valid_sensitivities:
+        return "Invalid sensitivity", 400
+
+    token = secrets.token_hex(8)
     generated_token.append(token)
     created_time = datetime.now()
 
     connection = get_db_connection()
     connection.execute(
         """
-        INSERT INTO tokens (token, created_at, status)
-        VALUES (?, ?, ?)
+        INSERT INTO tokens (token, created_at, status, type, sensitivity)
+        VALUES (?, ?, ?, ?, ?)
         """,
         (
             token,
             created_time.isoformat(),
-            "active"
+            "active",
+            token_type,
+            sensitivity
         )
     )
     connection.commit()

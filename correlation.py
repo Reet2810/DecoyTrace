@@ -1,6 +1,8 @@
 import sqlite3
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
+
 correlation_window = timedelta(minutes=3)
+
 
 def are_events_related(event_a, event_b):
     ip_a = event_a[2]
@@ -15,20 +17,26 @@ def are_events_related(event_a, event_b):
         return True
     return False
 
+
 def create_activity_groups(events):
     activities = []
+
     for event in events:
         added_to_activity = False
+
         for activity in activities:
             last_event = activity[-1]
+
             if are_events_related(last_event, event):
                 activity.append(event)
                 added_to_activity = True
                 break
+
         if not added_to_activity:
             activities.append([event])
 
     return activities
+
 
 connection = sqlite3.connect('decoytrace.db')
 
